@@ -1,5 +1,8 @@
 package com.example.demo;
 
 public interface ControllerInterface {
-    public void initialize();
+
+     void initialize();
+
+     void restart();
 }
