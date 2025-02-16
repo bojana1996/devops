@@ -4,6 +4,6 @@ package com.example.demo;
 public class Controller {
 
     int calculate(int a, int b){
-        return a-b;
+        return a*b;
     }
 }
