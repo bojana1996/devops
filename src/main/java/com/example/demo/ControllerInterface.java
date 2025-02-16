@@ -2,7 +2,6 @@ package com.example.demo;
 
 public interface ControllerInterface {
 
-     void initialize();
 
      void delete();
 }
