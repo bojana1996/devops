@@ -1,12 +1,10 @@
 pipeline {
     agent any
-
-    environment {
-        // Define environment variables if needed
-        MAVEN_HOME = tool name: 'Maven', type: 'Maven'  // Specify Maven installation
-        JAVA_HOME = tool name: 'JDK 17', type: 'JDK'     // Specify JDK version
+    tools {
+    maven Maven
     }
 
+  
     stages {
         stage('Checkout') {
             steps {
