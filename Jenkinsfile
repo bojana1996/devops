@@ -50,23 +50,16 @@ pipeline {
         script {
           // Deploy the artifact to Nexus
           sh """
-          mvn deploy: deploy - file\ -
-            Durl = $ {
-              NEXUS_URL
-            }
-          /repository/$ {
-            NEXUS_REPO
-          }
-          / \ -
-          DrepositoryId = nexus\ -
-            Dfile = target / your - artifact.jar\ -
-            DgroupId = com.example\ -
-            DartifactId = your - artifact\ -
-            Dversion = 1.0.$ {
-              BUILD_NUMBER
-            }\ -
-            Dpackaging = jar\ -
-            DgeneratePom = true """
+           mvn deploy:deploy-file \
+                                   -Durl=${NEXUS_URL}/repository/${NEXUS_REPO}/ \
+                                   -DrepositoryId=nexus \
+                                   -Dfile=target/your-artifact.jar \
+                                   -DgroupId=com.example \
+                                   -DartifactId=your-artifact \
+                                   -Dversion=1.0.${BUILD_NUMBER} \
+                                   -Dpackaging=jar \
+                                   -DgeneratePom=true
+          """
         }
       }
     }
