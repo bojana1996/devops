@@ -103,7 +103,7 @@ pipeline {
             steps {
                 script {
                     // Let's clone the source
-                   git credentialsId: 'admin:efdc7a3d42284c87b9a03a031b32d146', url: 'http://gitea:3000/admin/ci_cd.git'
+                   git credentialsId: 'a9499c5c-d4ec-4267-b131-363495a49924', url: 'http://gitea:3000/admin/ci_cd.git'
                 }
             }
         }
