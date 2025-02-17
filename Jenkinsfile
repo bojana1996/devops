@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout code from Git repository (Gitea, GitHub, etc.)
-                git credentialsId: 'admin:admin123', url: 'http://gitea:3000/ci_cd.git'
+                git credentialsId: 'admin:efdc7a3d42284c87b9a03a031b32d146', url: 'http://gitea:3000/ci_cd.git'
             }
         }
 
