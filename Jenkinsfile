@@ -112,7 +112,7 @@ pipeline {
          script {
            // Use Maven to build the project (compiling the code)
            // This could be changed to other build tools like Gradle
-           sh 'mvn clean install'
+           sh "mvn clean install"
          }
        }
      }
