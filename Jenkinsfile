@@ -49,8 +49,7 @@ pipeline {
       steps {
         script {
           // Deploy the artifact to Nexus
-          sh ""
-          "
+          sh """
           mvn deploy: deploy - file\ -
             Durl = $ {
               NEXUS_URL
@@ -67,8 +66,7 @@ pipeline {
               BUILD_NUMBER
             }\ -
             Dpackaging = jar\ -
-            DgeneratePom = true ""
-          "
+            DgeneratePom = true """
         }
       }
     }
