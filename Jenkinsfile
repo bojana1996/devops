@@ -72,16 +72,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Deploy to Staging') {
-            steps {
-                script {
-                    // Deploy the app to the staging environment (optional)
-                    // Example: Deploy to Kubernetes or an EC2 instance
-                    sh 'kubectl apply -f k8s/deployment.yaml'
-                }
-            }
-        }
     }
 
     post {
