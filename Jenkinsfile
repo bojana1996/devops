@@ -75,4 +75,3 @@ post {
     echo 'Pipeline failed, check the logs for details.'
   }
 }
-}
