@@ -137,7 +137,7 @@ pipeline {
 
         stage("publish to nexus") {
             steps {
-                nexusArtifactUploader artifacts: [[artifactId: 'demo', classifier: '', file: 'target/demo-0.0.1-SNAPSHOT', type: '.jar']], credentialsId: '988409bc-1c81-4a87-aa49-0daed79d25f1', groupId: 'com.example', nexusUrl: 'nexus:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-snapshots', version: '0.0.1'
+                nexusArtifactUploader artifacts: [[artifactId: 'demo', classifier: '', file: '/var/jenkins_home/jobs/ci_cd/jobs/ci-cd.r1iuf0/branches/main/workspace/target/demo-0.0.1-SNAPSHOT.jar.original', type: '.jar']], credentialsId: '988409bc-1c81-4a87-aa49-0daed79d25f1', groupId: 'com.example', nexusUrl: 'nexus:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-snapshots', version: '0.0.1'
                 
             }
         }
