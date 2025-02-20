@@ -99,6 +99,11 @@ pipeline {
     }
 
     stages {
+        stage("Hello){
+            steps{
+                echo "Hello"
+            }
+        }
         stage("clone code") {
             steps {
                 script {
