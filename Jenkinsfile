@@ -97,6 +97,7 @@ pipeline {
         // Jenkins credential id to authenticate to Nexus OSS
         NEXUS_CREDENTIAL_ID = "988409bc-1c81-4a87-aa49-0daed79d25f1"
         registryCredential = "docker-hub"
+        dockerHome = tool 'myDocker'
     }
 
     stages {
@@ -138,7 +139,6 @@ pipeline {
         
         stage('Initialize') {
            steps{
-            def dockerHome = tool 'myDocker'
             env.PATH = "${dockerHome}/bin:${env.PATH}"
            }
         } 
