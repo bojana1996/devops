@@ -83,6 +83,8 @@ pipeline {
     tools {
         // Note: this should match with the tool name configured in your jenkins instance (JENKINS_URL/configureTools/)
         maven "Maven"
+        org.jenkinsci.plugins.docker.commons.tools.DockerTool "docker"
+}
     }
 
     environment {
@@ -97,7 +99,6 @@ pipeline {
         // Jenkins credential id to authenticate to Nexus OSS
         NEXUS_CREDENTIAL_ID = "988409bc-1c81-4a87-aa49-0daed79d25f1"
         registryCredential = "docker-hub"
-        dockerHome = tool 'myDocker'
     }
 
     stages {
@@ -137,16 +138,11 @@ pipeline {
             }
         }
         
-        stage('Initialize') {
-           steps{
-            env.PATH = "${dockerHome}/bin:${env.PATH}"
-           }
-        } 
 
         stage('Building image') {
          steps{
            script {
-          dockerImage = docker.build "java-app"
+            dockerImage = docker.build "java-app"
         }
       }
     }
@@ -154,12 +150,14 @@ pipeline {
     stage('Deploy Image') {
       steps{
         script {
+          docker.withTool('docker'){
           docker.withRegistry( '', registryCredential ) {
             dockerImage.push("$BUILD_NUMBER")
              dockerImage.push('latest')
 
           }
         }
+      }
       }
     }
 
