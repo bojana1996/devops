@@ -83,8 +83,7 @@ pipeline {
     tools {
         // Note: this should match with the tool name configured in your jenkins instance (JENKINS_URL/configureTools/)
         maven "Maven"
-        docker 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
-}
+        dockerTool "Docker 27.5"
     }
 
     environment {
@@ -171,4 +170,5 @@ pipeline {
         }
       }
     }
+}
 }
