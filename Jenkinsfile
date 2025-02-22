@@ -136,12 +136,25 @@ pipeline {
                 }
             }
         }
-        
+        stage('Prepare Dockerfile') {
+            steps {
+                script {
+                    // Create a Dockerfile dynamically or copy from a template
+                    writeFile file: 'Dockerfile', text: '''
+                    FROM openjdk:11-jre-slim
+                    COPY . /app
+                    WORKDIR /app
+                    RUN ./mvnw clean install
+                    CMD ["java", "-jar", "target/myapp.jar"]
+                    '''
+                }
+            }
+        }
 
         stage('Building image') {
          steps{
            script {
-            dockerImage = docker.build "java-app"
+            sh 'docker build -t java-app .'
         }
       }
     }
