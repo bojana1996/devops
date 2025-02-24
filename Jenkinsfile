@@ -180,5 +180,25 @@ pipeline {
       }
 
     }
+
+    stage('Build and push Docker image') {
+          steps {
+            sh 'docker build -t my-image:latest .'
+            sh 'docker push my-image:latest'
+          }
+        }
+    stage('Deploy to Kubernetes') {
+
+          steps {
+
+            kubernetesDeploy(
+
+              configs: 'deployment.yaml'
+
+            )
+
+          }
+
+        }
   }
 }
