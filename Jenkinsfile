@@ -98,7 +98,7 @@ pipeline {
       steps {
         script {
           withDockerRegistry(credentialsId: 'dockerhub_credentials', url: 'https://index.docker.io/v1/') {
-            sh "docker build -t mydockeruser/my-image:latest ."
+            sh "docker build -t bojjana/my-image:latest ."
             sh "docker push bojjana/my-image:latest"
           }
         }
