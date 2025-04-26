@@ -78,7 +78,12 @@
 
 pipeline {
 
-  agent any
+  agent {
+          docker {
+              image 'docker:latest'  // Docker image to use
+              args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
+          }
+      }
 
   tools {
     // Note: this should match with the tool name configured in your jenkins instance (JENKINS_URL/configureTools/)
@@ -183,22 +188,28 @@ pipeline {
 
     stage('Build and push Docker image') {
           steps {
-            sh 'docker build -t my-image:latest .'
-            sh 'docker push my-image:latest'
+            script {
+                      withDockerRegistry(credentialsId: 'dockerhub_credentials', url: 'https://index.docker.io/v1/') {
+                          sh "docker build -t mydockeruser/my-image:latest ."
+                          sh "docker push bojjana/my-image:latest"
+                      }
+//             sh 'docker build -t my-image:latest .'
+//             sh 'docker push my-image:latest'
           }
         }
-    stage('Deploy to Kubernetes') {
 
-          steps {
-
-            kubernetesDeploy(
-
-              configs: 'deployment.yaml'
-
-            )
-
-          }
-
-        }
-  }
+//     stage('Deploy to Kubernetes') {
+//
+//           steps {
+//
+//             kubernetesDeploy(
+//
+//               configs: 'deployment.yaml'
+//
+//             )
+//
+//           }
+//
+//         }
+//   }
 }
