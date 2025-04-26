@@ -105,14 +105,14 @@ pipeline {
       }
     }
 
-//     stage('Deploy to Kubernetes') {
-//       steps {
-//         kubernetesDeploy(
-//           configs: 'deployment.yaml'  // Path to Kubernetes deployment YAML file
-//         )
-//       }
-//     }
-//   }
+    // stage('Deploy to Kubernetes') {
+    //   steps {
+    //     kubernetesDeploy(
+    //       configs: 'deployment.yaml'  // Path to Kubernetes deployment YAML file
+    //     )
+    //   }
+    // }
+  }
 
   post {
     success {
