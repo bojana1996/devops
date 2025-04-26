@@ -114,7 +114,6 @@ pipeline {
     }
   }
 
-  // Ensure post block is closed properly
   post {
     success {
       echo "Pipeline completed successfully!"
@@ -122,5 +121,5 @@ pipeline {
     failure {
       echo "Pipeline failed. Check the logs for details."
     }
-  }  // <-- This was missing
-}  // <-- This closing brace closes the pipeline block
+  }
+}
