@@ -113,4 +113,4 @@ pipeline {
       }
     }
   }
-}
+} // <-- This was missing
