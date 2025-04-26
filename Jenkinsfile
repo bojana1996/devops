@@ -192,25 +192,25 @@ pipeline {
                       withDockerRegistry(credentialsId: 'dockerhub_credentials', url: 'https://index.docker.io/v1/') {
                           sh "docker build -t mydockeruser/my-image:latest ."
                           sh "docker push bojjana/my-image:latest"
-                      }
+                    }
 //             sh 'docker build -t my-image:latest .'
 //             sh 'docker push my-image:latest'
           }
-        }
+    }
 
-//     stage('Deploy to Kubernetes') {
-//
-//           steps {
-//
-//             kubernetesDeploy(
-//
-//               configs: 'deployment.yaml'
-//
-//             )
-//
-//           }
-//
-//         }
-//   }
-}
+    stage('Deploy to Kubernetes') {
+
+          steps {
+
+            kubernetesDeploy(
+
+              configs: 'deployment.yaml'
+
+            )
+
+          }
+
+    }
+  }
+
 }
