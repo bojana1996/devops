@@ -11,11 +11,11 @@ pipeline {
     }
 
     environment {
-        NEXUS_VERSION = "nexus3"
-        NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "nexus:8081"
-        NEXUS_REPOSITORY = "maven-snapshots"
-        NEXUS_CREDENTIAL_ID = "9248e92a-dba9-491c-849b-472e3d3ca7fa"
+        NEXUS_VERSION = 'nexus3'
+        NEXUS_PROTOCOL = 'http'
+        NEXUS_URL = 'nexus:8081'
+        NEXUS_REPOSITORY = 'maven-snapshots'
+        NEXUS_CREDENTIAL_ID = '9248e92a-dba9-491c-849b-472e3d3ca7fa'
     }
 
     stages {
