@@ -1,0 +1,78 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      nexus:
+        image: sonatype/nexus3
+        ports:
+          - 8081:8081
+        options: >-
+          --health-cmd="curl -f http://localhost:8081 || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      NEXUS_URL: http://localhost:8081
+      NEXUS_REPOSITORY: maven-snapshots
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4
+        with:
+          maven-version: '3.8.7'
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Package with Maven (skip tests)
+        run: mvn package -DskipTests=true
+
+      - name: Upload to Nexus
+        run: |
+          ARTIFACT_PATH=$(ls target/*.jar | head -n 1)
+          POM_PATH="pom.xml"
+          mvn deploy:deploy-file \
+            -DgroupId=$(mvn help:evaluate -Dexpression=project.groupId -q -DforceStdout) \
+            -DartifactId=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout) \
+            -Dversion=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) \
+            -Dpackaging=jar \
+            -Dfile=$ARTIFACT_PATH \
+            -DpomFile=$POM_PATH \
+            -DrepositoryId=nexus \
+            -Durl=$NEXUS_URL/repository/$NEXUS_REPOSITORY \
+            -DgeneratePom=false \
+            -DretryFailedDeploymentCount=3 \
+            -Dusername=admin \
+            -Dpassword=${{ secrets.NEXUS_PASSWORD }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.DOCKER_HUB_USERNAME }}
+          password: ${{ env.DOCKER_HUB_PASSWORD }}
+
+      - name: Build Docker Image
+        run: docker build -t bojjana/my-image:latest .
+
+      - name: Push Docker Image
+        run: docker push bojjana/my-image:latest
