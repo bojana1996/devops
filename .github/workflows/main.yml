@@ -71,11 +71,20 @@ jobs:
             </servers>
           </settings>
           EOF
-
+          
       - name: Deploy to Nexus
         run: |
-          mvn deploy -DskipTests \
-            -DaltDeploymentRepository=nexus::default::$NEXUS_URL/repository/$NEXUS_REPOSITORY
+          #Verify repository exists
+           if ! curl -sSf -u admin:${{ secrets.NEXUS_PASSWORD }} \
+            "$NEXUS_URL/service/rest/v1/repositories/maven-snapshots" > /dev/null; then
+             echo "ERROR: maven-snapshots repository not found or inaccessible!"
+              exit 1
+          fi
+  
+    # Deploy with debug info
+    mvn -B deploy \
+      -DaltDeploymentRepository=nexus::default::$NEXUS_URL/repository/maven-snapshots \
+      -DrepositoryId=nexus
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
