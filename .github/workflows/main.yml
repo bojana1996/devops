@@ -4,28 +4,16 @@ on:
   push:
     branches: [ main ]
 
+env:
+  # Update these to match your existing Nexus configuration
+  NEXUS_URL: http://localhost:8081  # Replace with your Nexus host/ip
+  NEXUS_REPOSITORY: maven-snapshots
+  DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+  DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
-    services:
-      nexus:
-        image: sonatype/nexus3
-        ports:
-          - 8081:8081
-        env:
-          NEXUS_ADMIN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-        options: >-
-          --health-cmd="curl -f http://localhost:8081 || exit 1"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-    env:
-      NEXUS_URL: http://localhost:8081
-      NEXUS_REPOSITORY: maven-snapshots
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
     steps:
       - name: Checkout code
@@ -38,31 +26,15 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
-      - name: Set up Maven
-        uses: stCarolas/setup-maven@v4
-        with:
-          maven-version: '3.8.7'
-
-      - name: Wait for Nexus to be ready
+      - name: Verify Nexus connectivity
         run: |
-          echo "Waiting for Nexus to be ready..."
-          for i in {1..30}; do
-            if curl -sSf -u admin:${{ secrets.NEXUS_PASSWORD }} \
-              "$NEXUS_URL/service/rest/v1/status" | grep -q "state\":\"RUNNING"; then
-              echo "Nexus is ready!"
-              break
-            fi
-            echo "Attempt $i/30: Nexus not ready yet..."
-            sleep 10
-          done
+          echo "Testing Nexus connection..."
+          curl -v $NEXUS_URL/service/rest/v1/status
+          echo "Checking repository exists..."
+          curl -u admin:${{ secrets.NEXUS_PASSWORD }} \
+            "$NEXUS_URL/service/rest/v1/repositories" | jq '.[] | select(.name == "$NEXUS_REPOSITORY")'
 
-      - name: Build with Maven
-        run: mvn clean install
-
-      - name: Package with Maven
-        run: mvn package -DskipTests=true
-
-      - name: Configure Maven for Nexus
+      - name: Configure Maven settings
         run: |
           mkdir -p ~/.m2
           cat > ~/.m2/settings.xml <<EOF
@@ -74,12 +46,19 @@ jobs:
                 <password>${{ secrets.NEXUS_PASSWORD }}</password>
               </server>
             </servers>
+            <mirrors>
+              <mirror>
+                <id>nexus</id>
+                <url>$NEXUS_URL/repository/maven-public/</url>
+                <mirrorOf>*</mirrorOf>
+              </mirror>
+            </mirrors>
           </settings>
           EOF
 
-      - name: Publish to Nexus
+      - name: Build and deploy
         run: |
-          mvn deploy \
+          mvn -B clean deploy \
             -DaltDeploymentRepository=nexus::default::$NEXUS_URL/repository/$NEXUS_REPOSITORY \
             -DrepositoryId=nexus
 
@@ -89,8 +68,7 @@ jobs:
           username: ${{ env.DOCKER_HUB_USERNAME }}
           password: ${{ env.DOCKER_HUB_PASSWORD }}
 
-      - name: Build Docker Image
-        run: docker build -t bojjana/my-image:latest .
-
-      - name: Push Docker Image
-        run: docker push bojjana/my-image:latest
+      - name: Build and push Docker image
+        run: |
+          docker build -t bojjana/my-image:latest .
+          docker push bojjana/my-image:latest
