@@ -59,7 +59,7 @@ jobs:
             -Dfile=$ARTIFACT_PATH \
             -DpomFile=$POM_PATH \
             -DrepositoryId=nexus \
-            -Durl=$NEXUS_URL/repository/$NEXUS_REPOSITORY \
+            -Durl=$NEXUS_URL/#browse/browse:/$NEXUS_REPOSITORY \
             -DgeneratePom=false \
             -DretryFailedDeploymentCount=3 \
             -Dusername=admin \
