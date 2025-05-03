@@ -48,7 +48,23 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-		</plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.1.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>deploy-file</goal>
+						</goals>
+						<configuration>
+							<repositoryId>nexus</repositoryId>
+							<url>http://localhost:8081/repository/maven-snapshots</url>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+	</plugins>
 	</build>
 
 </project>

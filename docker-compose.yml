@@ -34,23 +34,34 @@ services:
     networks:
       - ci_cd_network
 
-  # Nexus Repository: Artifact repository
   nexus:
     image: sonatype/nexus3
     container_name: nexus
-    ports:
-      - "8081:8081"  # Nexus web UI
     volumes:
-      - nexus_data:/nexus-data
+      - nexus-data:/nexus-data
+    ports:
+      - "8081:8081"
     restart: always
-    networks:
-      - ci_cd_network
+
+#  # Nexus Repository: Artifact repository
+#  nexus:
+#    image: sonatype/nexus3
+#    container_name: nexus
+#    ports:
+#      - "8081:8081"  # Nexus web UI
+#    volumes:
+#      - nexus_data:/nexus-data
+#    restart: always
+#    networks:
+#      - ci_cd_network
 
 volumes:
   gitea_data:
   jenkins_data:
-  nexus_data:
+  nexus-data:
 
 networks:
   ci_cd_network:
     driver: bridge
+
+
