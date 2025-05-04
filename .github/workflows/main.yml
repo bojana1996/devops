@@ -26,13 +26,13 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
-      - name: Verify Nexus connectivity
-        run: |
-          echo "Testing Nexus connection..."
-          curl -v $NEXUS_URL/service/rest/v1/status
-          echo "Checking repository exists..."
-          curl -u admin:${{ secrets.NEXUS_PASSWORD }} \
-            "$NEXUS_URL/service/rest/v1/repositories" | jq '.[] | select(.name == "$NEXUS_REPOSITORY")'
+      # - name: Verify Nexus connectivity
+      #   run: |
+      #     echo "Testing Nexus connection..."
+      #     curl -v $NEXUS_URL/service/rest/v1/status
+      #     echo "Checking repository exists..."
+      #     curl -u admin:${{ secrets.NEXUS_PASSWORD }} \
+      #       "$NEXUS_URL/service/rest/v1/repositories" | jq '.[] | select(.name == "$NEXUS_REPOSITORY")'
 
       - name: Configure Maven settings
         run: |
@@ -56,11 +56,11 @@ jobs:
           </settings>
           EOF
 
-      - name: Build and deploy
-        run: |
-          mvn -B clean deploy \
-            -DaltDeploymentRepository=nexus::default::$NEXUS_URL/repository/$NEXUS_REPOSITORY \
-            -DrepositoryId=nexus
+      # - name: Build and deploy
+      #   run: |
+      #     mvn -B clean deploy \
+      #       -DaltDeploymentRepository=nexus::default::$NEXUS_URL/repository/$NEXUS_REPOSITORY \
+      #       -DrepositoryId=nexus
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
