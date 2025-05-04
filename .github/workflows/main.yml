@@ -6,7 +6,7 @@ on:
 
 env:
   # Update these to match your existing Nexus configuration
-  NEXUS_URL: http://localhost:8081  # Replace with your Nexus host/ip
+  NEXUS_URL: http://nexus:8081  # Replace with your Nexus host/ip
   NEXUS_REPOSITORY: maven-snapshots
   DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
   DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
