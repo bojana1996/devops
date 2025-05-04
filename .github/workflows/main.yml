@@ -76,6 +76,7 @@ jobs:
 
       - name: Set up Kubeconfig
         run: |
+          mkdir -p $HOME/.kube  # Create the .kube directory if it doesn't exist
           echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
 
       # Deploy to Kubernetes
