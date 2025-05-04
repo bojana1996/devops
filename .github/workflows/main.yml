@@ -69,10 +69,10 @@ jobs:
           username: ${{ env.DOCKER_HUB_USERNAME }}
           password: ${{ env.DOCKER_HUB_PASSWORD }}
 
-      - name: Build and push Docker image
-        run: |
-          docker build -t bojjana/my-image:latest .
-          docker push bojjana/my-image:latest
+      # - name: Build and push Docker image
+      #   run: |
+      #     docker build -t bojjana/my-image:latest .
+      #     docker push bojjana/my-image:latest
 
       - name: Set up Kubeconfig
         run: |
