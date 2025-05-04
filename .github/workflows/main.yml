@@ -83,5 +83,5 @@ jobs:
       # Deploy to Kubernetes
       - name: Deploy to Kubernetes
         run: |
-          kubectl set image deployment/hello-minikube myapp=bojjana/my-image:latest
+          kubectl set image deployment/hello-minikube echo-server=bojjana/my-image:latest
           kubectl rollout status deployment/hello-minikube
