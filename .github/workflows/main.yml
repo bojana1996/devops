@@ -10,10 +10,11 @@ env:
   NEXUS_REPOSITORY: maven-snapshots
   DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+  KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
@@ -72,3 +73,15 @@ jobs:
         run: |
           docker build -t bojjana/my-image:latest .
           docker push bojjana/my-image:latest
+
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config 
+
+      # Deploy to Kubernetes
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/myapp-deployment myapp=bojjana/my-image:latest
+          kubectl rollout status deployment/myapp-deployment
