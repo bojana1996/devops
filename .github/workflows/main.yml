@@ -5,9 +5,6 @@ on:
     branches: [ main ]
 
 env:
-  # Update these to match your existing Nexus configuration
-  NEXUS_URL: http://nexus:8081  # Replace with your Nexus host/ip
-  NEXUS_REPOSITORY: maven-snapshots
   DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
   KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
@@ -26,14 +23,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           cache: 'maven'
-
-      # - name: Verify Nexus connectivity
-      #   run: |
-      #     echo "Testing Nexus connection..."
-      #     curl -v $NEXUS_URL/service/rest/v1/status
-      #     echo "Checking repository exists..."
-      #     curl -u admin:${{ secrets.NEXUS_PASSWORD }} \
-      #       "$NEXUS_URL/service/rest/v1/repositories" | jq '.[] | select(.name == "$NEXUS_REPOSITORY")'
 
       - name: Configure Maven settings
         run: |
@@ -57,11 +46,11 @@ jobs:
           </settings>
           EOF
 
-      # - name: Build and deploy
-      #   run: |
-      #     mvn -B clean deploy \
-      #       -DaltDeploymentRepository=nexus::default::$NEXUS_URL/repository/$NEXUS_REPOSITORY \
-      #       -DrepositoryId=nexus
+      - name: Build and deploy
+        run: |
+          mvn -B clean deploy \
+            -DaltDeploymentRepository=nexus::default::$NEXUS_URL/repository/$NEXUS_REPOSITORY \
+            -DrepositoryId=nexus
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -69,10 +58,10 @@ jobs:
           username: ${{ env.DOCKER_HUB_USERNAME }}
           password: ${{ env.DOCKER_HUB_PASSWORD }}
 
-      # - name: Build and push Docker image
-      #   run: |
-      #     docker build -t bojjana/my-image:latest .
-      #     docker push bojjana/my-image:latest
+      - name: Build and push Docker image
+        run: |
+          docker build -t bojjana/my-image:latest .
+          docker push bojjana/my-image:latest
 
       - name: Set up Kubeconfig
         run: |
